@@ -1,7 +1,8 @@
 #Meson build output
-build/
-builddir/
-_build/
+build/*
+builddir/*
+_build/*
+.build/*
 
 #compiled binaries and object files
 *.o

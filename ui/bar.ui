@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<interface>
+  <requires lib="gtk" version="4.20"/>
+  <object class="GtkApplicationWindow" id="bar_window">
+    <property name="title">ArdentDust Bar</property>
+    <property name="default-height">38</property>
+    <property name="default-width">900</property>
+    <property name="decorated">False</property>
+    <property name="resizable">False</property>
+
+    <child>
+      <object class="GtkBox" id="bar_box">
+        <property name="orientation">horizontal</property>
+        <property name="height-request">38</property>
+        <property name="spacing">6</property>
+        <property name="margin-start">8</property>
+        <property name="margin-end">8</property>
+        <property name="valign">center</property>
+
+        <child>
+          <object class="GtkButton" id="apps_button">
+            <property name="label">Apps</property>
+            <property name="focusable">False</property>
+          </object>
+        </child>
+
+
+        <child>
+          <object class="GtkSeparator" id="sep_left">
+            <property name="Orientation">vertical</property>
+          </object>
+        </child>
+
+
+        <child>
+          <object class="GtkLabel" id="clock_label">
+            <property name="label">00:00:00</property>
+          </object>
+        </child>
+
+
+        <child>
+          <object class="GtkSeperator" id="sep_status">
+            <property name="orientation">vertical</property>
+          </object>
+        </child>
+
+
+        <child>
+          <object class="GtkLabel" id="wifi_label">
+            <property name="label">Wi-Fi</property>
+          </object>
+        </child>
+
+
+        <child>
+          <object class="GtkLabel" id="volume_label">
+            <property name="label">Vol 80%</property>
+          </object>
+        </child>
+
+
+        <child>
+          <object class="GtkLabel" id="battery_label">
+            <property name="label">Bat 100%</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
