@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!DOCTYPE cambalache-project SYSTEM "cambalache-project.dtd">
+<!-- Created with Cambalache 1.0.2 -->
+<cambalache-project version="1.0.0" target_tk="gtk-4.0">
+  <ui filename="Nightshade.ui" sha256="70740cea2284d1f29216e6007dff9df3636737d8bfd0f29152e596ed5cb105b5"/>
+</cambalache-project>

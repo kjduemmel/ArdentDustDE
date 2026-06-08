@@ -1,0 +1,18 @@
+#Meson build output
+build/
+builddir/
+_build/
+
+#compiled binaries and object files
+*.o
+*.so
+*.a
+*.dll
+*.dylib
+*.exe
+*.out
+
+#Editor files
+*.swp
+*.swo
+*~
