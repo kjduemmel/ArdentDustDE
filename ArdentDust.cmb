@@ -1,6 +1,0 @@
-<?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<!DOCTYPE cambalache-project SYSTEM "cambalache-project.dtd">
-<!-- Created with Cambalache 1.0.2 -->
-<cambalache-project version="1.0.0" target_tk="gtk-4.0">
-  <ui filename="ui/bar.ui" sha256="c76ff75fcc3d0c9904ba215199ff39a64a917b540eb2976ff911f410699666e0"/>
-</cambalache-project>
