@@ -1,10 +1,13 @@
-#include "server.h"
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdlib.h>
-#include <wlr/backend.h>
-#include <wlr/render/wlr_renderer.h>
-#include <wlr/render/allocator.h>
-#include <wlr/types/wlr_scene.h>
-#include <wlr/types/wlr_xdg_shell.h>
+#include <stdio.h>
+#include <time.h>
+#include <unistd.h>
+
+#include "server.h"
 
 bool server_init(struct server *server) {
     server->display = wl_display_create();
@@ -21,18 +24,32 @@ bool server_init(struct server *server) {
     );
 
     server->scene = wlr_scene_create();
+    server->scene_tree =
+        wlr_scene_tree_create(&server->scene->tree);
 
-    server->xdg_shell = wlr_xdg_shell_create(server->display, 3);
+    server->output_layout =
+        wlr_output_layout_create(server->display);
+
+    wlr_scene_attach_output_layout(server->scene, server->output_layout);
+
+    server->xdg_shell =
+        wlr_xdg_shell_create(server->display, 3);
+
+    // ---- listeners (wiring only) ----
+    server->new_output.notify = handle_new_output;
+    wl_signal_add(&server->backend->events.new_output,
+                  &server->new_output);
+
+    server->new_surface.notify = handle_new_surface;
+    wl_signal_add(&server->xdg_shell->events.new_surface,
+                  &server->new_surface);
 
     return true;
 }
 
 void server_run(struct server *server) {
     const char *socket = wl_display_add_socket_auto(server->display);
-
-    if (!socket) {
-        return;
-    }
+    if (!socket) return;
 
     setenv("WAYLAND_DISPLAY", socket, 1);
 
@@ -45,3 +62,4 @@ void server_destroy(struct server *server) {
     wl_display_destroy_clients(server->display);
     wl_display_destroy(server->display);
 }
+
