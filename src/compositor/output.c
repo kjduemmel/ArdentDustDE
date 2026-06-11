@@ -31,7 +31,24 @@ void handle_new_output(struct wl_listener *listener, void *data) {
         wl_container_of(listener, server, new_output);
 
     struct wlr_output *output = data;
+    
+	// Configure the output
+	struct wlr_output_state state;
+	wlr_output_state_init(&state);
 
+	wlr_output_state_set_enabled(&state, true);
+
+	struct wlr_output_mode *mode =
+		wlr_output_preferred_mode(output);
+
+	if (mode) {
+		wlr_output_state_set_mode(&state, mode);
+	}
+
+	wlr_output_commit_state(output, &state);
+	wlr_output_state_finish(&state);
+
+	// Initialize rendering 
     wlr_output_init_render(output,
         server->allocator,
         server->renderer);
@@ -39,6 +56,8 @@ void handle_new_output(struct wl_listener *listener, void *data) {
     wlr_output_layout_add_auto(
         server->output_layout,
         output);
+        
+    wlr_output_preferred_mode(output);
 
     struct output_state *state =
         calloc(1, sizeof(*state));
