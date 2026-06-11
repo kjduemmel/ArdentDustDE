@@ -22,6 +22,18 @@ bool server_init(struct server *server) {
         server->backend,
         server->renderer
     );
+    
+	if (!server->display) {
+		return false;
+	}
+
+	if (!server->backend) {
+		return false;
+	}
+
+	if (!server->renderer || !server->allocator) {
+		return false;
+	}
 
     server->scene = wlr_scene_create();
     server->scene_tree =
@@ -53,12 +65,17 @@ void server_run(struct server *server) {
 
     setenv("WAYLAND_DISPLAY", socket, 1);
 
-    wlr_backend_start(server->backend);
+    if (!wlr_backend_start(server->backend)) {
+		return;
+	}
 
     wl_display_run(server->display);
 }
 
 void server_destroy(struct server *server) {
+	wlr_output_layout_destroy(...)
+	wlr_scene_node_destroy(...)
+	wlr_backend_destroy(...)
     wl_display_destroy_clients(server->display);
     wl_display_destroy(server->display);
 }
