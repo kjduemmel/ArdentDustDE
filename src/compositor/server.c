@@ -73,10 +73,20 @@ void server_run(struct server *server) {
 }
 
 void server_destroy(struct server *server) {
-	wlr_output_layout_destroy(...)
-	wlr_scene_node_destroy(...)
-	wlr_backend_destroy(...)
+    // Pass the global multi-monitor layout tracker
+    wlr_output_layout_destroy(server->output_layout);
+
+    // Pass the base root node of your 2D scene graph tree
+    wlr_scene_node_destroy(&server->scene->tree.node);
+
+    // Pass the hardware backend wrapper
+    wlr_backend_destroy(server->backend);
+
+    // Terminate any running application windows safely
     wl_display_destroy_clients(server->display);
+
+    // Free the master display loop memory
     wl_display_destroy(server->display);
 }
+
 
