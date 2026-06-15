@@ -14,8 +14,7 @@ struct output_state {
 };
 
 static void output_frame(struct wl_listener *listener, void *data) {
-    struct output_state *state =
-        wl_container_of(listener, state, frame);
+    struct output_state *state = wl_container_of(listener, state, frame);
 
     struct wlr_scene_output *scene_output = state->scene_output;
 
@@ -33,20 +32,20 @@ void handle_new_output(struct wl_listener *listener, void *data) {
     struct wlr_output *output = data;
     
 	// Configure the output
-	struct wlr_output_state state;
-	wlr_output_state_init(&state);
+	struct wlr_output_state hardware_state;
+	wlr_output_state_init(&hardware_state);
 
-	wlr_output_state_set_enabled(&state, true);
+	wlr_output_state_set_enabled(&hardware_state, true);
 
 	struct wlr_output_mode *mode =
 		wlr_output_preferred_mode(output);
 
 	if (mode) {
-		wlr_output_state_set_mode(&state, mode);
+		wlr_output_state_set_mode(&hardware_state, mode);
 	}
 
-	wlr_output_commit_state(output, &state);
-	wlr_output_state_finish(&state);
+	wlr_output_commit_state(output, &hardware_state);
+	wlr_output_state_finish(&hardware_state);
 
 	// Initialize rendering 
     wlr_output_init_render(output,
