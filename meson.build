@@ -21,7 +21,9 @@ executable('ardent-dust-de',
     'src/compositor/main.c',
     'src/compositor/server.c',
     'src/compositor/output.c',
-    'src/compositor/xdg.c'
+    'src/compositor/xdg.c',
+    'src/compositor/listeners.c',
+    'src/compositor/cursor.c'
   ],
   include_directories: include_directories('src/compositor'),
   dependencies: deps,

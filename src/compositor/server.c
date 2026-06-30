@@ -10,6 +10,13 @@
 
 #include "server.h"
 
+// ---- Forward Declarations for Event Handlers ----
+void handle_cursor_motion(struct wl_listener *listener, void *data);
+void handle_cursor_motion_absolute(struct wl_listener *listener, void *data);
+void handle_new_output(struct wl_listener *listener, void *data);
+void handle_new_surface(struct wl_listener *listener, void *data);
+
+
 bool server_init(struct server *server) {
     server->display = wl_display_create();
     if (!server->display) return false;
@@ -52,7 +59,6 @@ bool server_init(struct server *server) {
 	// ---- Cursor ----
 	server->cursor = wlr_cursor_create();
     wlr_cursor_attach_output_layout(server->cursor, server->output_layout); //setup monitor space
-    wlr_cursor_attach_backend(server->cursor, server->backend); //connect virtual cursor to hardware layer
     server->cursor_mgr = wlr_xcursor_manager_create("default", 24); //load pointer icons
 
     server->cursor_motion.notify = handle_cursor_motion; //notification coming through from device
