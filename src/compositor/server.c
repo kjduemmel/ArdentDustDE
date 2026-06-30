@@ -77,6 +77,13 @@ void server_run(struct server *server) {
     if (!wlr_backend_start(server->backend)) {
 		return;
 	}
+	
+	pid_t pid = fork();
+	if (pid == 0) {
+		execl("/usr/bin/foot", "foot", NULL);
+		execl("/usr/bin/alacritty", "alacritty", NULL);
+		exit(1);
+	}
 
     wl_display_run(server->display);
 }
