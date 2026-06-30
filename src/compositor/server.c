@@ -82,6 +82,10 @@ void server_run(struct server *server) {
 }
 
 void server_destroy(struct server *server) {
+	//clean up cursor
+	if (server->cursor_mgr) wlr_xcursor_manager_destroy(server->cursor_mgr);
+	if (server->cursor) wlr_cursor_destroy(server->cursor);
+	
     // Pass the global multi-monitor layout tracker
     wlr_output_layout_destroy(server->output_layout);
 
