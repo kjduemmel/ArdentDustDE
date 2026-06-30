@@ -6,34 +6,26 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/types.h>
 
 #include "server.h"
 
 bool server_init(struct server *server) {
     server->display = wl_display_create();
+    if (!server->display) return false;
 
     server->backend = wlr_backend_autocreate(
         wl_display_get_event_loop(server->display),
         NULL
     );
+    if (!server->backend) return false;
 
     server->renderer = wlr_renderer_autocreate(server->backend);
     server->allocator = wlr_allocator_autocreate(
         server->backend,
         server->renderer
     );
-    
-	if (!server->display) {
-		return false;
-	}
-
-	if (!server->backend) {
-		return false;
-	}
-
-	if (!server->renderer || !server->allocator) {
-		return false;
-	}
+    if (!server->renderer || !server->allocator) return false;
 
     server->scene = wlr_scene_create();
     server->scene_tree =
@@ -55,6 +47,23 @@ bool server_init(struct server *server) {
     server->new_surface.notify = handle_new_surface;
     wl_signal_add(&server->xdg_shell->events.new_surface,
                   &server->new_surface);
+
+
+	// ---- Cursor ----
+	server->cursor = wlr_cursor_create();
+    wlr_cursor_attach_output_layout(server->cursor, server->output_layout); //setup monitor space
+    wlr_cursor_attach_backend(server->cursor, server->backend); //connect virtual cursor to hardware layer
+    server->cursor_mgr = wlr_xcursor_manager_create("default", 24); //load pointer icons
+
+    server->cursor_motion.notify = handle_cursor_motion; //notification coming through from device
+    wl_signal_add(&server->cursor->events.motion, &server->cursor_motion); //connection to previous notification
+    // Note: cursor moves relative to previous position on this one [cursor moves # pixels up and right each frame]
+
+	//same thing but absolute position
+    server->cursor_motion_absolute.notify = handle_cursor_motion_absolute;
+    wl_signal_add(&server->cursor->events.motion_absolute, &server->cursor_motion_absolute);
+    //Note: cursor is moved to exact position on this [cursor moves to 60% vertical and 35% horizontal]
+
 
     return true;
 }
