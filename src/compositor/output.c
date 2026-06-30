@@ -31,6 +31,9 @@ void handle_new_output(struct wl_listener *listener, void *data) {
 
     struct wlr_output *output = data;
     
+    // Initialize rendering
+    wlr_output_init_render(output, server->allocator, server->renderer);
+    
 	// Configure the output
 	struct wlr_output_state hardware_state;
 	wlr_output_state_init(&hardware_state);
@@ -46,11 +49,6 @@ void handle_new_output(struct wl_listener *listener, void *data) {
 
 	wlr_output_commit_state(output, &hardware_state);
 	wlr_output_state_finish(&hardware_state);
-
-	// Initialize rendering 
-    wlr_output_init_render(output,
-        server->allocator,
-        server->renderer);
 
     wlr_output_layout_add_auto(
         server->output_layout,

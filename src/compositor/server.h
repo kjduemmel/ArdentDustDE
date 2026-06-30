@@ -8,8 +8,15 @@
 #include <wlr/types/wlr_scene.h>
 #include <wlr/types/wlr_xdg_shell.h>
 #include <wlr/types/wlr_output_layout.h>
+
 #include <wlr/types/wlr_cursor.h>
 #include <wlr/types/wlr_xcursor_manager.h>
+
+#include <wlr/types/wlr_seat.h>
+#include <wlr/types/wlr_input_device.h>
+#include <wlr/types/wlr_compositor.h>
+#include <wlr/types/wlr_subcompositor.h>
+#include <wlr/types/wlr_data_device.h>
 
 struct server {
     struct wl_display *display;
@@ -24,6 +31,7 @@ struct server {
     struct wlr_output_layout *output_layout;
 
     struct wlr_xdg_shell *xdg_shell;
+    struct wlr_seat *seat;
     
 	// ---- Cursor Subsystems ----
 	struct wlr_cursor *cursor;
@@ -33,6 +41,7 @@ struct server {
 	struct wl_listener cursor_motion;
 	struct wl_listener cursor_motion_absolute;
 
+	struct wl_listener new_input;
     struct wl_listener new_output;
     struct wl_listener new_surface;
 };
@@ -41,6 +50,7 @@ bool server_init(struct server *server);
 void server_run(struct server *server);
 void server_destroy(struct server *server);
 
+void handle_new_input(struct wl_listener *listener, void *data);
 void handle_new_output(struct wl_listener *listener, void *data);
 void handle_new_surface(struct wl_listener *listener, void *data);
 

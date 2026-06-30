@@ -13,6 +13,7 @@
 // ---- Forward Declarations for Event Handlers ----
 void handle_cursor_motion(struct wl_listener *listener, void *data);
 void handle_cursor_motion_absolute(struct wl_listener *listener, void *data);
+void handle_new_input(struct wl_listener *listener, void *data);
 void handle_new_output(struct wl_listener *listener, void *data);
 void handle_new_surface(struct wl_listener *listener, void *data);
 
@@ -33,6 +34,10 @@ bool server_init(struct server *server) {
         server->renderer
     );
     if (!server->renderer || !server->allocator) return false;
+    
+    wlr_compositor_create(server->display, 6, server->renderer);
+    wlr_subcompositor_create(server->display);
+    wlr_data_device_manager_create(server->display);
 
     server->scene = wlr_scene_create();
     server->scene_tree =
@@ -45,11 +50,16 @@ bool server_init(struct server *server) {
 
     server->xdg_shell =
         wlr_xdg_shell_create(server->display, 3);
+        
+    server->seat = wlr_seat_create(server->display, "seat0");
 
     // ---- listeners (wiring only) ----
     server->new_output.notify = handle_new_output;
     wl_signal_add(&server->backend->events.new_output,
                   &server->new_output);
+                  
+    server->new_input.notify = handle_new_input;
+    wl_signal_add(&server->backend->events.new_input, & server->new_input);
 
     server->new_surface.notify = handle_new_surface;
     wl_signal_add(&server->xdg_shell->events.new_surface,
@@ -60,6 +70,7 @@ bool server_init(struct server *server) {
 	server->cursor = wlr_cursor_create();
     wlr_cursor_attach_output_layout(server->cursor, server->output_layout); //setup monitor space
     server->cursor_mgr = wlr_xcursor_manager_create("default", 24); //load pointer icons
+    wlr_xcursor_manager_load(server->cursor_mgr, 1);
 
     server->cursor_motion.notify = handle_cursor_motion; //notification coming through from device
     wl_signal_add(&server->cursor->events.motion, &server->cursor_motion); //connection to previous notification
